@@ -341,12 +341,16 @@ class BuilderBase {
   }
 
   CSRGraph<NodeID_, DestID_, invert> MakeGraph() {
+    Timer t;
+    t.Start();
     CSRGraph<NodeID_, DestID_, invert> g;
     {  // extra scope to trigger earlier deletion of el (save memory)
       EdgeList el;
       if (cli_.filename() != "") {
         Reader<NodeID_, DestID_, WeightT_, invert> r(cli_.filename());
         if ((r.GetSuffix() == ".sg") || (r.GetSuffix() == ".wsg")) {
+          t.Stop();
+          PrintTime("MakeGraph Time", t.Seconds());
           return r.ReadSerializedGraph();
         } else {
           el = r.ReadFile(needs_weights_);
@@ -357,6 +361,8 @@ class BuilderBase {
       }
       g = MakeGraphFromEL(el);
     }
+    t.Stop();
+    PrintTime("MakeGraph Time", t.Seconds());
     if (in_place_)
       return g;
     else
