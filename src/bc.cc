@@ -92,7 +92,8 @@ void PBFS(const Graph &g, NodeID source, pvector<CountT> &path_counts,
   }
   depth_index.push_back(queue.begin());
   t.Stop();
-  PrintTime("PBFS Time", t.Seconds());
+  static vector<double> pbfs_times;
+  RecordTimeAndPrintPercentiles("PBFS Time", pbfs_times, t.Seconds());
 }
 
 
@@ -153,7 +154,9 @@ pvector<ScoreT> Brandes(const Graph &g, SourcePicker<Graph> &sp,
   for (NodeID n=0; n < g.num_nodes(); n++)
     scores[n] = scores[n] / biggest_score;
   overall_timer.Stop();
-  PrintTime("Brandes Time", overall_timer.Seconds());
+  static vector<double> brandes_times;
+  RecordTimeAndPrintPercentiles("Brandes Time", brandes_times,
+                                overall_timer.Seconds());
   return scores;
 }
 

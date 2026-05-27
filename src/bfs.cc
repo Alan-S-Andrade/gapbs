@@ -63,7 +63,8 @@ int64_t BUStep(const Graph &g, pvector<NodeID> &parent, Bitmap &front,
     }
   }
   t.Stop();
-  PrintTime("BUStep Time", t.Seconds());
+  static vector<double> bu_step_times;
+  RecordTimeAndPrintPercentiles("BUStep Time", bu_step_times, t.Seconds());
   return awake_count;
 }
 

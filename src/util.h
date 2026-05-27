@@ -5,8 +5,10 @@
 #define UTIL_H_
 
 #include <stdio.h>
+#include <algorithm>
 #include <cinttypes>
 #include <string>
+#include <vector>
 
 #include "timer.h"
 
@@ -28,6 +30,28 @@ void PrintLabel(const std::string &label, const std::string &val) {
 
 void PrintTime(const std::string &s, double seconds) {
   printf("%-21s%3.5lf\n", (s + ":").c_str(), seconds);
+}
+
+void PrintTimePercentiles(const std::string &s,
+                          const std::vector<double> &seconds) {
+  if (seconds.empty())
+    return;
+  std::vector<double> sorted(seconds);
+  std::sort(sorted.begin(), sorted.end());
+  auto percentile = [&sorted] (size_t p) {
+    size_t index = ((p * sorted.size()) + 99) / 100;
+    index = index == 0 ? 0 : index - 1;
+    return sorted[index];
+  };
+  printf("%-21sP25 %3.5lf  P55 %3.5lf  P99 %3.5lf\n",
+         (s + ":").c_str(), percentile(25), percentile(55), percentile(99));
+}
+
+void RecordTimeAndPrintPercentiles(const std::string &s,
+                                   std::vector<double> &seconds,
+                                   double elapsed_seconds) {
+  seconds.push_back(elapsed_seconds);
+  PrintTimePercentiles(s, seconds);
 }
 
 void PrintStep(const std::string &s, int64_t count) {

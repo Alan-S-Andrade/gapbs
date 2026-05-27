@@ -60,7 +60,9 @@ pvector<ScoreT> PageRankPullGS(const Graph &g, int max_iters, double epsilon=0,
       break;
   }
   t.Stop();
-  PrintTime("PageRankPullGS Time", t.Seconds());
+  static vector<double> pagerank_pull_gs_times;
+  RecordTimeAndPrintPercentiles("PageRankPullGS Time",
+                                pagerank_pull_gs_times, t.Seconds());
   return scores;
 }
 
