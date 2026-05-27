@@ -33,6 +33,8 @@ const float kDamp = 0.85;
 
 pvector<ScoreT> PageRankPullGS(const Graph &g, int max_iters, double epsilon=0,
                                bool logging_enabled = false) {
+  Timer t;
+  t.Start();
   const ScoreT init_score = 1.0f / g.num_nodes();
   const ScoreT base_score = (1.0f - kDamp) / g.num_nodes();
   pvector<ScoreT> scores(g.num_nodes(), init_score);
@@ -57,6 +59,8 @@ pvector<ScoreT> PageRankPullGS(const Graph &g, int max_iters, double epsilon=0,
     if (error < epsilon)
       break;
   }
+  t.Stop();
+  PrintTime("PageRankPullGS Time", t.Seconds());
   return scores;
 }
 

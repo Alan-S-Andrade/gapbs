@@ -51,6 +51,8 @@ typedef double CountT;
 void PBFS(const Graph &g, NodeID source, pvector<CountT> &path_counts,
     Bitmap &succ, vector<SlidingQueue<NodeID>::iterator> &depth_index,
     SlidingQueue<NodeID> &queue) {
+  Timer t;
+  t.Start();
   pvector<NodeID> depths(g.num_nodes(), -1);
   depths[source] = 0;
   path_counts[source] = 1;
@@ -89,11 +91,15 @@ void PBFS(const Graph &g, NodeID source, pvector<CountT> &path_counts,
     }
   }
   depth_index.push_back(queue.begin());
+  t.Stop();
+  PrintTime("PBFS Time", t.Seconds());
 }
 
 
 pvector<ScoreT> Brandes(const Graph &g, SourcePicker<Graph> &sp,
                         NodeID num_iters, bool logging_enabled = false) {
+  Timer overall_timer;
+  overall_timer.Start();
   Timer t;
   t.Start();
   pvector<ScoreT> scores(g.num_nodes(), 0);
@@ -146,6 +152,8 @@ pvector<ScoreT> Brandes(const Graph &g, SourcePicker<Graph> &sp,
   #pragma omp parallel for
   for (NodeID n=0; n < g.num_nodes(); n++)
     scores[n] = scores[n] / biggest_score;
+  overall_timer.Stop();
+  PrintTime("Brandes Time", overall_timer.Seconds());
   return scores;
 }
 

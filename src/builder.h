@@ -350,7 +350,6 @@ class BuilderBase {
         Reader<NodeID_, DestID_, WeightT_, invert> r(cli_.filename());
         if ((r.GetSuffix() == ".sg") || (r.GetSuffix() == ".wsg")) {
           t.Stop();
-          PrintTime("MakeGraph Time", t.Seconds());
           return r.ReadSerializedGraph();
         } else {
           el = r.ReadFile(needs_weights_);
@@ -362,7 +361,6 @@ class BuilderBase {
       g = MakeGraphFromEL(el);
     }
     t.Stop();
-    PrintTime("MakeGraph Time", t.Seconds());
     if (in_place_)
       return g;
     else
