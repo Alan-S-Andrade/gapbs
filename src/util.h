@@ -47,11 +47,8 @@ void PrintTimePercentiles(const std::string &s,
          (s + ":").c_str(), percentile(25), percentile(55), percentile(99));
 }
 
-void RecordTimeAndPrintPercentiles(const std::string &s,
-                                   std::vector<double> &seconds,
-                                   double elapsed_seconds) {
+void RecordTime(std::vector<double> &seconds, double elapsed_seconds) {
   seconds.push_back(elapsed_seconds);
-  PrintTimePercentiles(s, seconds);
 }
 
 void PrintStep(const std::string &s, int64_t count) {

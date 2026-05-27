@@ -30,6 +30,8 @@ using namespace std;
 typedef float ScoreT;
 const float kDamp = 0.85;
 
+static vector<double> pagerank_pull_gs_times;
+
 
 pvector<ScoreT> PageRankPullGS(const Graph &g, int max_iters, double epsilon=0,
                                bool logging_enabled = false) {
@@ -60,9 +62,7 @@ pvector<ScoreT> PageRankPullGS(const Graph &g, int max_iters, double epsilon=0,
       break;
   }
   t.Stop();
-  static vector<double> pagerank_pull_gs_times;
-  RecordTimeAndPrintPercentiles("PageRankPullGS Time",
-                                pagerank_pull_gs_times, t.Seconds());
+  RecordTime(pagerank_pull_gs_times, t.Seconds());
   return scores;
 }
 
@@ -113,5 +113,6 @@ int main(int argc, char* argv[]) {
     return PRVerifier(g, scores, cli.tolerance());
   };
   BenchmarkKernel(cli, g, PRBound, PrintTopScores, VerifierBound);
+  PrintTimePercentiles("PageRankPullGS Time", pagerank_pull_gs_times);
   return 0;
 }

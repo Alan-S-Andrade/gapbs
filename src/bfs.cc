@@ -43,6 +43,8 @@ them in the parent array as negative numbers. Thus, the encoding of parent is:
 
 using namespace std;
 
+static vector<double> bus_step_times;
+
 int64_t BUStep(const Graph &g, pvector<NodeID> &parent, Bitmap &front,
                Bitmap &next) {
   Timer t;
@@ -63,8 +65,7 @@ int64_t BUStep(const Graph &g, pvector<NodeID> &parent, Bitmap &front,
     }
   }
   t.Stop();
-  static vector<double> bu_step_times;
-  RecordTimeAndPrintPercentiles("BUStep Time", bu_step_times, t.Seconds());
+  RecordTime(bus_step_times, t.Seconds());
   return awake_count;
 }
 
@@ -267,5 +268,6 @@ int main(int argc, char* argv[]) {
     return BFSVerifier(g, vsp.PickNext(), parent);
   };
   BenchmarkKernel(cli, g, BFSBound, PrintBFSStats, VerifierBound);
+  PrintTimePercentiles("BUStep Time", bus_step_times);
   return 0;
 }

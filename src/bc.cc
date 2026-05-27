@@ -47,6 +47,9 @@ using namespace std;
 typedef float ScoreT;
 typedef double CountT;
 
+static vector<double> pbfs_times;
+static vector<double> brandes_times;
+
 
 void PBFS(const Graph &g, NodeID source, pvector<CountT> &path_counts,
     Bitmap &succ, vector<SlidingQueue<NodeID>::iterator> &depth_index,
@@ -92,8 +95,7 @@ void PBFS(const Graph &g, NodeID source, pvector<CountT> &path_counts,
   }
   depth_index.push_back(queue.begin());
   t.Stop();
-  static vector<double> pbfs_times;
-  RecordTimeAndPrintPercentiles("PBFS Time", pbfs_times, t.Seconds());
+  RecordTime(pbfs_times, t.Seconds());
 }
 
 
@@ -154,9 +156,7 @@ pvector<ScoreT> Brandes(const Graph &g, SourcePicker<Graph> &sp,
   for (NodeID n=0; n < g.num_nodes(); n++)
     scores[n] = scores[n] / biggest_score;
   overall_timer.Stop();
-  static vector<double> brandes_times;
-  RecordTimeAndPrintPercentiles("Brandes Time", brandes_times,
-                                overall_timer.Seconds());
+  RecordTime(brandes_times, overall_timer.Seconds());
   return scores;
 }
 
@@ -259,5 +259,7 @@ int main(int argc, char* argv[]) {
     return BCVerifier(g, vsp, cli.num_iters(), scores);
   };
   BenchmarkKernel(cli, g, BCBound, PrintTopScores, VerifierBound);
+  PrintTimePercentiles("PBFS Time", pbfs_times);
+  PrintTimePercentiles("Brandes Time", brandes_times);
   return 0;
 }
